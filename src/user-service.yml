@@ -1,0 +1,20 @@
+#########################################################
+#           Author :: Manouchehr Rasouli                #
+# The user-service created for managing users, roles,   #
+# permissions, identity and other thinks that services  #
+# needed for authenticate and authorize system users    #
+#########################################################
+user_service.grpc:
+  host: 0.0.0.0
+  port: 9190
+
+user_service.cqrs:
+  persist:
+    mong.host: localhost
+    mongo.port: 27017
+    # todo add read concern and other configurations
+  cache:
+    redis.host: localhost
+    redis.port: 6379
+    redis.isEnable: false
+    # todo add cache ttl and otehr configs
