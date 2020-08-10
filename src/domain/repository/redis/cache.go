@@ -30,7 +30,7 @@ func NewCache(address string, port int32, password string, db int, retry int32, 
 		DB:       db,
 	})
 
-	cache := iCache{
+	cache := iRedisCache{
 		address:    address,
 		port:       port,
 		password:   password,

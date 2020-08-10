@@ -1,0 +1,12 @@
+user_service.cqrs:
+  persist:
+    mong.host: "localhost"
+    mongo.port: 27017
+
+  cache:
+    redis.host: "localhost"
+    redis.port: 6379
+    redis.isEnable: false
+    redis.db: 0
+    redis.password: ""
+    redis.retry: 6
