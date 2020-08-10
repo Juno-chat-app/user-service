@@ -1,15 +1,19 @@
 # This file contains test mode configurations
 # set APP_MODE to test in running to load this file
 user_service.grpc:
-  host: localhost
+  host: "localhost"
   port: 9190
 
 user_service.cqrs:
   persist:
-    mong.host: localhost
+    mong.host: "localhost"
     mongo.port: 27017
     # todo add read concern and other configurations
   cache:
-    redis.host: localhost
+    redis.host: "localhost"
     redis.port: 6379
     redis.isEnable: false
+    redis.db: 0
+    redis.password: ""
+    redis.retry: 6
+

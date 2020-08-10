@@ -19,6 +19,9 @@ type (
 				IsEnable bool   `yaml:"redis.isEnable"`
 				Host     string `yaml:"redis.host"`
 				Port     int32  `yaml:"redis.port"`
+				Db       int    `yaml:"redis.db"`
+				Password string `yaml:"redis.password"`
+				Retry    int32  `yaml:"redis.retry"`
 			} `yaml:"cache"`
 		} `yaml:"user_service.cqrs"`
 	}

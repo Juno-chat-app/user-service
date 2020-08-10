@@ -1,0 +1,64 @@
+syntax = "proto3";
+package userproto;
+
+//============ The request message
+message RequestMessage {
+    string Name = 1;
+    string Type = 2;
+    string time = 3;
+    ReqMeta Header = 4;
+    Any Body = 5;
+}
+
+//============ The response message
+message ResponseMessage {
+    string entity = 1;
+    ResponseMetadata meta = 2;
+    Any Data = 3;
+}
+
+//==================== Meta
+message ReqMeta {
+    string UTP = 1; // user-type ex["seller", "buyer", etc..] - purpose => used in multiplexer
+    uint64 UID = 2; // user-id
+    string FID = 3; // finance-id
+    uint32 page = 4;
+    uint32 perPage = 5;
+    string ipAddress = 6;
+    string startAt = 7;
+    string endAt = 8;
+    RequestMetaSorts sorts = 9;
+    RequestMetaFilter filters = 10;
+    RequestMetaAction action = 11;
+}
+
+message RequestMetaSorts {
+    string name = 1;
+    uint32 dir = 2;
+    enum direction {
+        Descending = 0;
+        Ascending = 1;
+    }
+}
+
+message RequestMetaAction {
+    string actionType = 1;
+}
+
+message RequestMetaFilter {
+    string type = 1;
+    string opt = 2;
+    string value = 3;
+}
+
+message ResponseMetadata {
+    uint32 total = 1;
+    uint32 page = 2;
+    uint32 perPage = 3;
+}
+
+message Any {
+    string type_url = 1;
+    bytes value = 2;
+}
+
