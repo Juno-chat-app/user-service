@@ -20,7 +20,7 @@ message ResponseMessage {
 //==================== Meta
 message ReqMeta {
     string UTP = 1; // user-type ex["seller", "buyer", etc..] - purpose => used in multiplexer
-    uint64 UID = 2; // user-id
+    string UID = 2; // user-id
     string FID = 3; // finance-id
     uint32 page = 4;
     uint32 perPage = 5;

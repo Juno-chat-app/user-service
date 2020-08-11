@@ -29,16 +29,16 @@ func init() {
 }
 
 var fileDescriptor_116e343673f7ffaf = []byte{
-	// 129 bytes of a gzipped FileDescriptorProto
+	// 142 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2a, 0x2d, 0x4e, 0x2d,
 	0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x04, 0xb1, 0xc1, 0x4c, 0x29, 0x21, 0x10, 0x33,
-	0x3e, 0x37, 0xb5, 0xb8, 0x38, 0x31, 0x3d, 0x15, 0x22, 0x6d, 0x74, 0x81, 0x91, 0x8b, 0x3b, 0xb4,
+	0x3e, 0x37, 0xb5, 0xb8, 0x38, 0x31, 0x3d, 0x15, 0x22, 0x6d, 0x34, 0x89, 0x89, 0x8b, 0x3b, 0xb4,
 	0x38, 0xb5, 0x28, 0x38, 0xb5, 0xa8, 0x2c, 0x33, 0x39, 0x55, 0xc8, 0x9e, 0x8b, 0x2d, 0x38, 0x33,
 	0x3d, 0xcf, 0x33, 0x4f, 0x48, 0x52, 0x0f, 0xae, 0x53, 0x2f, 0x28, 0xb5, 0xb0, 0x34, 0xb5, 0xb8,
 	0xc4, 0x17, 0xa2, 0x55, 0x4a, 0x0a, 0x45, 0xaa, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x15, 0x2a, 0x07,
-	0x33, 0x20, 0xb4, 0x80, 0x02, 0x03, 0xc2, 0x52, 0x8b, 0x32, 0xd3, 0x2a, 0xc9, 0x34, 0x20, 0x89,
-	0x0d, 0x2c, 0x6c, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xf5, 0x73, 0xbe, 0xd6, 0x06, 0x01, 0x00,
-	0x00,
+	0x33, 0x20, 0xb4, 0x80, 0x02, 0x03, 0xc2, 0x52, 0x8b, 0x32, 0xd3, 0x2a, 0xc9, 0x35, 0xc0, 0x81,
+	0x8b, 0x3d, 0x28, 0x35, 0xad, 0x28, 0xb5, 0x38, 0x83, 0x4c, 0x13, 0x92, 0xd8, 0xc0, 0xc2, 0xc6,
+	0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf5, 0x9f, 0xf5, 0x71, 0x48, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -56,6 +56,7 @@ type UserServiceClient interface {
 	SignIn(ctx context.Context, in *RequestMessage, opts ...grpc.CallOption) (*ResponseMessage, error)
 	SignUp(ctx context.Context, in *RequestMessage, opts ...grpc.CallOption) (*ResponseMessage, error)
 	Verify(ctx context.Context, in *RequestMessage, opts ...grpc.CallOption) (*ResponseMessage, error)
+	Refresh(ctx context.Context, in *RequestMessage, opts ...grpc.CallOption) (*ResponseMessage, error)
 }
 
 type userServiceClient struct {
@@ -93,11 +94,21 @@ func (c *userServiceClient) Verify(ctx context.Context, in *RequestMessage, opts
 	return out, nil
 }
 
+func (c *userServiceClient) Refresh(ctx context.Context, in *RequestMessage, opts ...grpc.CallOption) (*ResponseMessage, error) {
+	out := new(ResponseMessage)
+	err := c.cc.Invoke(ctx, "/userproto.UserService/Refresh", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 type UserServiceServer interface {
 	SignIn(context.Context, *RequestMessage) (*ResponseMessage, error)
 	SignUp(context.Context, *RequestMessage) (*ResponseMessage, error)
 	Verify(context.Context, *RequestMessage) (*ResponseMessage, error)
+	Refresh(context.Context, *RequestMessage) (*ResponseMessage, error)
 }
 
 // UnimplementedUserServiceServer can be embedded to have forward compatible implementations.
@@ -112,6 +123,9 @@ func (*UnimplementedUserServiceServer) SignUp(ctx context.Context, req *RequestM
 }
 func (*UnimplementedUserServiceServer) Verify(ctx context.Context, req *RequestMessage) (*ResponseMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
+}
+func (*UnimplementedUserServiceServer) Refresh(ctx context.Context, req *RequestMessage) (*ResponseMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
 
 func RegisterUserServiceServer(s *grpc.Server, srv UserServiceServer) {
@@ -172,6 +186,24 @@ func _UserService_Verify_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Refresh(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userproto.UserService/Refresh",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Refresh(ctx, req.(*RequestMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _UserService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "userproto.UserService",
 	HandlerType: (*UserServiceServer)(nil),
@@ -187,6 +219,10 @@ var _UserService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Verify",
 			Handler:    _UserService_Verify_Handler,
+		},
+		{
+			MethodName: "Refresh",
+			Handler:    _UserService_Refresh_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -16,3 +16,7 @@ func (s *Server) SignUp(ctx context.Context, req *userproto.RequestMessage) (*us
 func (s *Server) Verify(ctx context.Context, req *userproto.RequestMessage) (*userproto.ResponseMessage, error) {
 	panic("not implemented")
 }
+
+func (s *Server) Refresh(ctx context.Context, req *userproto.RequestMessage) (*userproto.ResponseMessage, error) {
+	panic("not implemented")
+}

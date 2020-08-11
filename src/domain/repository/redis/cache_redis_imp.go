@@ -26,7 +26,7 @@ type iRedisCache struct {
 	sync       sync.Mutex
 }
 
-func (c iRedisCache) Ping(ctx context.Context) (err error) {
+func (c *iRedisCache) Ping(ctx context.Context) (err error) {
 	_, err = c.connection.Ping(ctx).Result()
 
 	if err != nil {
@@ -41,7 +41,7 @@ func (c iRedisCache) Ping(ctx context.Context) (err error) {
 	return nil
 }
 
-func (c iRedisCache) Remove(ctx context.Context, key string) (err error) {
+func (c *iRedisCache) Remove(ctx context.Context, key string) (err error) {
 	err = c.connection.Del(ctx, key).Err()
 
 	if err != nil {
@@ -56,7 +56,7 @@ func (c iRedisCache) Remove(ctx context.Context, key string) (err error) {
 	return nil
 }
 
-func (c iRedisCache) Set(ctx context.Context, key string, value string, expiration time.Duration) (err error) {
+func (c *iRedisCache) Set(ctx context.Context, key string, value string, expiration time.Duration) (err error) {
 	err = c.connection.Set(ctx, key, value, expiration).Err()
 
 	if err != nil {
@@ -71,7 +71,7 @@ func (c iRedisCache) Set(ctx context.Context, key string, value string, expirati
 	return nil
 }
 
-func (c iRedisCache) Get(ctx context.Context, key string) (value string, err error) {
+func (c *iRedisCache) Get(ctx context.Context, key string) (value string, err error) {
 	value, err = c.connection.Get(ctx, key).Result()
 	if err != redis.Nil && err != nil {
 		err := c.reconnect(ctx)
@@ -87,7 +87,7 @@ func (c iRedisCache) Get(ctx context.Context, key string) (value string, err err
 	return value, nil
 }
 
-func (c iRedisCache) reconnect(ctx context.Context) (err error) {
+func (c *iRedisCache) reconnect(ctx context.Context) (err error) {
 	val := ctx.Value(Retry)
 	if val == nil {
 		c.connection = nil

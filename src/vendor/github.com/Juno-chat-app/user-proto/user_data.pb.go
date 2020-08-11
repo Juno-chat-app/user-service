@@ -123,57 +123,135 @@ func (m *SignInRequest) GetPassword() string {
 	return ""
 }
 
-type SignInResponse struct {
+type ValidateRequest struct {
 	BearerToken          string   `protobuf:"bytes,1,opt,name=BearerToken,proto3" json:"BearerToken"`
-	RefreshToken         string   `protobuf:"bytes,2,opt,name=RefreshToken,proto3" json:"RefreshToken"`
-	UserId               string   `protobuf:"bytes,3,opt,name=UserId,proto3" json:"UserId"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *SignInResponse) Reset()         { *m = SignInResponse{} }
-func (m *SignInResponse) String() string { return proto.CompactTextString(m) }
-func (*SignInResponse) ProtoMessage()    {}
-func (*SignInResponse) Descriptor() ([]byte, []int) {
+func (m *ValidateRequest) Reset()         { *m = ValidateRequest{} }
+func (m *ValidateRequest) String() string { return proto.CompactTextString(m) }
+func (*ValidateRequest) ProtoMessage()    {}
+func (*ValidateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dbaa7354e4324fd0, []int{2}
 }
 
-func (m *SignInResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SignInResponse.Unmarshal(m, b)
+func (m *ValidateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ValidateRequest.Unmarshal(m, b)
 }
-func (m *SignInResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SignInResponse.Marshal(b, m, deterministic)
+func (m *ValidateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ValidateRequest.Marshal(b, m, deterministic)
 }
-func (m *SignInResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SignInResponse.Merge(m, src)
+func (m *ValidateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ValidateRequest.Merge(m, src)
 }
-func (m *SignInResponse) XXX_Size() int {
-	return xxx_messageInfo_SignInResponse.Size(m)
+func (m *ValidateRequest) XXX_Size() int {
+	return xxx_messageInfo_ValidateRequest.Size(m)
 }
-func (m *SignInResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SignInResponse.DiscardUnknown(m)
+func (m *ValidateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ValidateRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SignInResponse proto.InternalMessageInfo
+var xxx_messageInfo_ValidateRequest proto.InternalMessageInfo
 
-func (m *SignInResponse) GetBearerToken() string {
+func (m *ValidateRequest) GetBearerToken() string {
 	if m != nil {
 		return m.BearerToken
 	}
 	return ""
 }
 
-func (m *SignInResponse) GetRefreshToken() string {
+type RefreshRequest struct {
+	RefreshToken         string   `protobuf:"bytes,1,opt,name=RefreshToken,proto3" json:"RefreshToken"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RefreshRequest) Reset()         { *m = RefreshRequest{} }
+func (m *RefreshRequest) String() string { return proto.CompactTextString(m) }
+func (*RefreshRequest) ProtoMessage()    {}
+func (*RefreshRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dbaa7354e4324fd0, []int{3}
+}
+
+func (m *RefreshRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RefreshRequest.Unmarshal(m, b)
+}
+func (m *RefreshRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RefreshRequest.Marshal(b, m, deterministic)
+}
+func (m *RefreshRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RefreshRequest.Merge(m, src)
+}
+func (m *RefreshRequest) XXX_Size() int {
+	return xxx_messageInfo_RefreshRequest.Size(m)
+}
+func (m *RefreshRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RefreshRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RefreshRequest proto.InternalMessageInfo
+
+func (m *RefreshRequest) GetRefreshToken() string {
 	if m != nil {
 		return m.RefreshToken
 	}
 	return ""
 }
 
-func (m *SignInResponse) GetUserId() string {
+type Response struct {
+	BearerToken          string   `protobuf:"bytes,1,opt,name=BearerToken,proto3" json:"BearerToken"`
+	Duration             int64    `protobuf:"varint,2,opt,name=Duration,proto3" json:"Duration"`
+	RefreshToken         string   `protobuf:"bytes,3,opt,name=RefreshToken,proto3" json:"RefreshToken"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Response) Reset()         { *m = Response{} }
+func (m *Response) String() string { return proto.CompactTextString(m) }
+func (*Response) ProtoMessage()    {}
+func (*Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dbaa7354e4324fd0, []int{4}
+}
+
+func (m *Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Response.Unmarshal(m, b)
+}
+func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+}
+func (m *Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Response.Merge(m, src)
+}
+func (m *Response) XXX_Size() int {
+	return xxx_messageInfo_Response.Size(m)
+}
+func (m *Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Response proto.InternalMessageInfo
+
+func (m *Response) GetBearerToken() string {
 	if m != nil {
-		return m.UserId
+		return m.BearerToken
+	}
+	return ""
+}
+
+func (m *Response) GetDuration() int64 {
+	if m != nil {
+		return m.Duration
+	}
+	return 0
+}
+
+func (m *Response) GetRefreshToken() string {
+	if m != nil {
+		return m.RefreshToken
 	}
 	return ""
 }
@@ -181,7 +259,9 @@ func (m *SignInResponse) GetUserId() string {
 func init() {
 	proto.RegisterType((*SignUpRequest)(nil), "userproto.SignUpRequest")
 	proto.RegisterType((*SignInRequest)(nil), "userproto.SignInRequest")
-	proto.RegisterType((*SignInResponse)(nil), "userproto.SignInResponse")
+	proto.RegisterType((*ValidateRequest)(nil), "userproto.ValidateRequest")
+	proto.RegisterType((*RefreshRequest)(nil), "userproto.RefreshRequest")
+	proto.RegisterType((*Response)(nil), "userproto.Response")
 }
 
 func init() {
@@ -189,7 +269,7 @@ func init() {
 }
 
 var fileDescriptor_dbaa7354e4324fd0 = []byte{
-	// 193 bytes of a gzipped FileDescriptorProto
+	// 224 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2f, 0x2d, 0x4e, 0x2d,
 	0x8a, 0x4f, 0x49, 0x2c, 0x49, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x04, 0x09, 0x80,
 	0x99, 0x4a, 0xb1, 0x5c, 0xbc, 0xc1, 0x99, 0xe9, 0x79, 0xa1, 0x05, 0x41, 0xa9, 0x85, 0xa5, 0xa9,
@@ -197,10 +277,11 @@ var fileDescriptor_dbaa7354e4324fd0 = []byte{
 	0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x70, 0xbe, 0x90, 0x08, 0x17, 0xab, 0x6b, 0x6e, 0x62, 0x66, 0x8e,
 	0x04, 0x13, 0x58, 0x02, 0xc2, 0x01, 0xe9, 0x08, 0x48, 0x2c, 0x2e, 0x2e, 0xcf, 0x2f, 0x4a, 0x91,
 	0x60, 0x86, 0xe8, 0x80, 0xf1, 0x95, 0xdc, 0x21, 0xc6, 0x7b, 0xe6, 0x11, 0x63, 0x3c, 0xb2, 0x41,
-	0x4c, 0x68, 0x06, 0xe5, 0x71, 0xf1, 0xc1, 0x0c, 0x2a, 0x2e, 0xc8, 0xcf, 0x2b, 0x4e, 0x15, 0x52,
-	0xe0, 0xe2, 0x76, 0x4a, 0x4d, 0x2c, 0x4a, 0x2d, 0x0a, 0xc9, 0xcf, 0x4e, 0xcd, 0x83, 0x1a, 0x86,
-	0x2c, 0x24, 0xa4, 0xc4, 0xc5, 0x13, 0x94, 0x9a, 0x56, 0x94, 0x5a, 0x9c, 0x01, 0x51, 0x02, 0x31,
-	0x13, 0x45, 0x4c, 0x48, 0x8c, 0x8b, 0x0d, 0x64, 0xbf, 0x27, 0xcc, 0xe9, 0x50, 0x5e, 0x12, 0x1b,
-	0x38, 0x78, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x34, 0x3a, 0x01, 0x54, 0x3c, 0x01, 0x00,
-	0x00,
+	0x4c, 0x68, 0x06, 0x19, 0x73, 0xf1, 0x87, 0x25, 0xe6, 0x64, 0xa6, 0x24, 0x96, 0xa4, 0xc2, 0x8c,
+	0x52, 0xe0, 0xe2, 0x76, 0x4a, 0x4d, 0x2c, 0x4a, 0x2d, 0x0a, 0xc9, 0xcf, 0x4e, 0xcd, 0x83, 0x9a,
+	0x86, 0x2c, 0xa4, 0x64, 0xc2, 0xc5, 0x17, 0x94, 0x9a, 0x56, 0x94, 0x5a, 0x9c, 0x01, 0xd3, 0xa3,
+	0xc4, 0xc5, 0x03, 0x15, 0x41, 0xd6, 0x84, 0x22, 0xa6, 0x94, 0xc3, 0xc5, 0x11, 0x94, 0x5a, 0x5c,
+	0x90, 0x9f, 0x57, 0x9c, 0x4a, 0xd8, 0x0e, 0x90, 0xa3, 0x5d, 0x4a, 0x8b, 0x12, 0x4b, 0x32, 0xf3,
+	0xf3, 0xc0, 0x8e, 0x66, 0x0e, 0x82, 0xf3, 0x31, 0x6c, 0x63, 0xc6, 0xb4, 0x2d, 0x89, 0x0d, 0x1c,
+	0x0f, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x09, 0xe4, 0x50, 0x05, 0xa5, 0x01, 0x00, 0x00,
 }

@@ -1,7 +1,13 @@
 user_service.cqrs:
   persist:
-    mong.host: "localhost"
+    mongo.host: "localhost"
     mongo.port: 27017
+    mongo.uri: ""
+    mongo.userName: ""
+    mongo.password: ""
+    mongo.userDatabase: "userDatabase"
+    mongo.userCollection: "userCollection"
+    mongo.connectionTimeout: 2 # seconds
 
   cache:
     redis.host: "localhost"
