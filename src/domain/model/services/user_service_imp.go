@@ -26,6 +26,10 @@ func (i *iUserService) SignUp(ctx context.Context, user *entity.User) (user_ *en
 		"user-name", user.UserName,
 		"user-contact", user.ContactInfo)
 
+	if user.UserName == "" || user.Password == "" || user.ContactInfo.Email == "" {
+		return nil, status.Error(http.StatusBadRequest, "invalid value for user-name or password")
+	}
+
 	create := time.Now().UTC()
 
 	hashPass, err := generatePasswordOneWayHash(user.Password)

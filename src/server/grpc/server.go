@@ -9,6 +9,13 @@ import (
 	"net"
 )
 
+const (
+	SignInRequestMethod   string = "SignInRequest"
+	SignUpRequestMethod   string = "SignUpRequest"
+	ValidateRequestMethod string = "ValidateRequest"
+	RefreshRequestMethod  string = "RefreshRequest"
+)
+
 type Server struct {
 	address     string
 	port        int32
@@ -30,6 +37,7 @@ func NewServer(address string, port int32, userService services.IUserService, lo
 func (s *Server) Start() error {
 	address := fmt.Sprintf("%s:%d", s.address, s.port)
 	lis, err := net.Listen("tcp", address)
+
 	if err != nil {
 		s.logger.Error("Got error on creating listener",
 			"method", "Start",
