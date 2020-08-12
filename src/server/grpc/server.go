@@ -3,22 +3,25 @@ package grpc
 import (
 	"fmt"
 	userproto "github.com/Juno-chat-app/user-proto"
+	"github.com/Juno-chat-app/user-service/domain/model/services"
 	"github.com/Juno-chat-app/user-service/infra/logger"
 	"google.golang.org/grpc"
 	"net"
 )
 
 type Server struct {
-	address string
-	port    int32
-	logger  logger.ILogger
+	address     string
+	port        int32
+	userService services.IUserService
+	logger      logger.ILogger
 }
 
-func NewServer(address string, port int32, logger logger.ILogger) *Server {
+func NewServer(address string, port int32, userService services.IUserService, logger logger.ILogger) *Server {
 	server := Server{
-		address: address,
-		port:    port,
-		logger:  logger,
+		address:     address,
+		port:        port,
+		userService: userService,
+		logger:      logger,
 	}
 
 	return &server

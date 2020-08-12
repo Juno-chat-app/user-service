@@ -2,8 +2,15 @@
 // This file contains configuration of the service
 package config
 
+import "time"
+
 type (
 	Configuration struct {
+		AuthConfig struct {
+			AccessTTL  time.Duration `yaml:"auth.accessTTL"`
+			RefreshTTL time.Duration `yaml:"auth.refreshTTL"`
+		} `yaml:"user_service.auth"`
+
 		GRPCConfig struct {
 			Host string `yaml:"host"`
 			Port int32  `yaml:"port"`

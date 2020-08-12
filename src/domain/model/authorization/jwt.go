@@ -1,5 +1,7 @@
 package authorization
 
+import "github.com/Juno-chat-app/user-service/infra/logger"
+
 type TokenDetail struct {
 	AccessToken     string
 	RefreshToke     string
@@ -16,7 +18,12 @@ type IJwtHandler interface {
 	ValidateRefreshToken(refreshToken string) (tokenDetail *TokenDetail, err error)
 }
 
-func NewJwtHandler(accessTtl int64, refreshTtl int64) IJwtHandler {
+func NewJwtHandler(accessTtl int64, refreshTtl int64, logger logger.ILogger) IJwtHandler {
+	logger.Info("initial jwt-handler",
+		"method", "NewJwtHandler",
+		"access-ttl", accessTtl,
+		"refresh-ttl", refreshTtl)
+
 	handler := iJwtHandler{
 		accessTokenTtl:  accessTtl,
 		refreshTokenTtl: refreshTtl,

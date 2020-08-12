@@ -7,6 +7,7 @@ import (
 	"github.com/Juno-chat-app/user-service/domain/repository/mongo"
 	"github.com/Juno-chat-app/user-service/infra/logger"
 	"github.com/stretchr/testify/require"
+	"github.com/twinj/uuid"
 	"os"
 	"testing"
 	"time"
@@ -49,7 +50,7 @@ func Test_Save_FindWithUserNamePassword_FindWithUserId_Remove(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEqual(t, "", user.UserId)
 
-	usr, err := repo.FindWithUserNamePassword(ctx, user.UserName, user.Password)
+	usr, err := repo.FindWithUserName(ctx, user.UserName)
 	require.Nil(t, err)
 	require.Equal(t, usr.UserId, user.UserId)
 
@@ -68,7 +69,7 @@ func newUser() *entity.User {
 	user := entity.User{
 		UserName: "test",
 		Password: "test",
-		UserId:   "",
+		UserId:   uuid.NewV4().String(),
 		Status: &entity.UserStatus{
 			Status:         entity.Active,
 			ActivationCode: "",

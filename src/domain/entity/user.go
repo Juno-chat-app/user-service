@@ -17,6 +17,7 @@ const (
 	// The paths to access data in database
 	UserNamePath  Path = "user-name"
 	EmailPath     Path = "contact-info.email"
+	StatusPath    Path = "status.user-status"
 	PasswordPath  Path = "password"
 	UserIdPath    Path = "user-id"
 	DeletedAtPath Path = "deleted-at"

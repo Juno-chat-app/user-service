@@ -7,7 +7,6 @@ import (
 	"github.com/Juno-chat-app/user-service/domain/entity"
 	"github.com/Juno-chat-app/user-service/infra/logger"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc/status"
@@ -33,18 +32,9 @@ func (ur *iUserRepository) Save(ctx context.Context, user *entity.User) (userId 
 		dbContext, cancel := context.WithTimeout(ctx, time.Duration(ur.conf.ConnectionTimeout)*time.Second)
 		defer cancel()
 
-		dbRes, err := ur.connection.Database(ur.conf.UserDatabase, nil).
+		_, err := ur.connection.Database(ur.conf.UserDatabase, nil).
 			Collection(ur.conf.UserCollection, nil).
 			InsertOne(dbContext, user)
-
-		if err != nil {
-			return nil, status.Error(http.StatusInternalServerError, err.Error())
-		}
-
-		user.UserId = dbRes.InsertedID.(primitive.ObjectID).Hex()
-		_, err = ur.connection.Database(ur.conf.UserDatabase, nil).
-			Collection(ur.conf.UserCollection, nil).
-			UpdateOne(dbContext, bson.M{"_id": dbRes.InsertedID}, bson.M{"$set": user})
 
 		if err != nil {
 			return nil, status.Error(http.StatusInternalServerError, err.Error())
@@ -56,7 +46,7 @@ func (ur *iUserRepository) Save(ctx context.Context, user *entity.User) (userId 
 	return nil, nil
 }
 
-func (ur *iUserRepository) FindWithUserNamePassword(ctx context.Context, userName string, password string) (user *entity.User, err error) {
+func (ur *iUserRepository) FindWithUserName(ctx context.Context, userName string) (user *entity.User, err error) {
 	err = ur.establishConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -67,7 +57,7 @@ func (ur *iUserRepository) FindWithUserNamePassword(ctx context.Context, userNam
 	query := bson.M{
 		"$and": []bson.M{
 			bson.M{string(entity.UserNamePath): userName},
-			bson.M{string(entity.PasswordPath): password},
+			bson.M{string(entity.StatusPath): entity.Active},
 			bson.M{string(entity.DeletedAtPath): nil},
 		},
 	}
@@ -125,11 +115,9 @@ func (ur *iUserRepository) Remove(ctx context.Context, user *entity.User) (user_
 	user.UpdatedAt = &tm
 	user.DeletedAt = &tm
 
-	id, _ := primitive.ObjectIDFromHex(user.UserId)
-
 	_, err = ur.connection.Database(ur.conf.UserDatabase, nil).
 		Collection(ur.conf.UserCollection, nil).
-		UpdateOne(dbContext, bson.M{"_id": id}, bson.M{"$set": user}, nil)
+		UpdateOne(dbContext, bson.M{string(entity.UserIdPath): user.UserId}, bson.M{"$set": user}, nil)
 
 	if err != nil {
 		return nil, status.Error(http.StatusInternalServerError, err.Error())
@@ -159,6 +147,7 @@ func (ur *iUserRepository) isUserNameOrEmailDuplicated(ctx context.Context, user
 		"$or": []bson.M{
 			bson.M{string(entity.UserNamePath): userName},
 			bson.M{string(entity.EmailPath): email},
+			bson.M{string(entity.StatusPath): entity.Active},
 		},
 	}
 

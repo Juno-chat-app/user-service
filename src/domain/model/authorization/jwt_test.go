@@ -1,6 +1,7 @@
 package authorization
 
 import (
+	logger2 "github.com/Juno-chat-app/user-service/infra/logger"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
@@ -13,7 +14,8 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	handler = NewJwtHandler(int64(time.Second), int64(time.Minute))
+	logger, _ := logger2.NewLogger()
+	handler = NewJwtHandler(int64(time.Second), int64(time.Minute), logger)
 
 	code := m.Run()
 	os.Exit(code)
