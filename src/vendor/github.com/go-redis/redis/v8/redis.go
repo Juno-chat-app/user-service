@@ -48,83 +48,63 @@ func (hs *hooks) AddHook(hook Hook) {
 func (hs hooks) process(
 	ctx context.Context, cmd Cmder, fn func(context.Context, Cmder) error,
 ) error {
-	ctx, err := hs.beforeProcess(ctx, cmd)
-	if err != nil {
-		cmd.SetErr(err)
-		return err
+	if len(hs.hooks) == 0 {
+		return fn(ctx, cmd)
 	}
 
-	cmdErr := fn(ctx, cmd)
+	var hookIndex int
+	var retErr error
 
-	if err := hs.afterProcess(ctx, cmd); err != nil {
-		cmd.SetErr(err)
-		return err
-	}
-
-	return cmdErr
-}
-
-func (hs hooks) beforeProcess(ctx context.Context, cmd Cmder) (context.Context, error) {
-	for _, h := range hs.hooks {
-		var err error
-		ctx, err = h.BeforeProcess(ctx, cmd)
-		if err != nil {
-			return nil, err
+	for ; hookIndex < len(hs.hooks) && retErr == nil; hookIndex++ {
+		ctx, retErr = hs.hooks[hookIndex].BeforeProcess(ctx, cmd)
+		if retErr != nil {
+			cmd.SetErr(retErr)
 		}
 	}
-	return ctx, nil
-}
 
-func (hs hooks) afterProcess(ctx context.Context, cmd Cmder) error {
-	var firstErr error
-	for _, h := range hs.hooks {
-		err := h.AfterProcess(ctx, cmd)
-		if err != nil && firstErr == nil {
-			firstErr = err
+	if retErr == nil {
+		retErr = fn(ctx, cmd)
+	}
+
+	for hookIndex--; hookIndex >= 0; hookIndex-- {
+		if err := hs.hooks[hookIndex].AfterProcess(ctx, cmd); err != nil {
+			retErr = err
+			cmd.SetErr(retErr)
 		}
 	}
-	return firstErr
+
+	return retErr
 }
 
 func (hs hooks) processPipeline(
 	ctx context.Context, cmds []Cmder, fn func(context.Context, []Cmder) error,
 ) error {
-	ctx, err := hs.beforeProcessPipeline(ctx, cmds)
-	if err != nil {
-		setCmdsErr(cmds, err)
-		return err
+	if len(hs.hooks) == 0 {
+		return fn(ctx, cmds)
 	}
 
-	cmdsErr := fn(ctx, cmds)
+	var hookIndex int
+	var retErr error
 
-	if err := hs.afterProcessPipeline(ctx, cmds); err != nil {
-		setCmdsErr(cmds, err)
-		return err
-	}
-
-	return cmdsErr
-}
-
-func (hs hooks) beforeProcessPipeline(ctx context.Context, cmds []Cmder) (context.Context, error) {
-	for _, h := range hs.hooks {
-		var err error
-		ctx, err = h.BeforeProcessPipeline(ctx, cmds)
-		if err != nil {
-			return nil, err
+	for ; hookIndex < len(hs.hooks) && retErr == nil; hookIndex++ {
+		ctx, retErr = hs.hooks[hookIndex].BeforeProcessPipeline(ctx, cmds)
+		if retErr != nil {
+			setCmdsErr(cmds, retErr)
 		}
 	}
-	return ctx, nil
-}
 
-func (hs hooks) afterProcessPipeline(ctx context.Context, cmds []Cmder) error {
-	var firstErr error
-	for _, h := range hs.hooks {
-		err := h.AfterProcessPipeline(ctx, cmds)
-		if err != nil && firstErr == nil {
-			firstErr = err
+	if retErr == nil {
+		retErr = fn(ctx, cmds)
+	}
+
+	for hookIndex--; hookIndex >= 0; hookIndex-- {
+		if err := hs.hooks[hookIndex].AfterProcessPipeline(ctx, cmds); err != nil {
+			retErr = err
+			setCmdsErr(cmds, retErr)
 		}
 	}
-	return firstErr
+
+	return retErr
 }
 
 func (hs hooks) processTxPipeline(
@@ -218,7 +198,7 @@ func (c *baseClient) _getConn(ctx context.Context) (*pool.Conn, error) {
 		return c.initConn(ctx, cn)
 	})
 	if err != nil {
-		c.connPool.Remove(cn, err)
+		c.connPool.Remove(ctx, cn, err)
 		if err := internal.Unwrap(err); err != nil {
 			return nil, err
 		}
@@ -241,8 +221,7 @@ func (c *baseClient) initConn(ctx context.Context, cn *pool.Conn) error {
 		return nil
 	}
 
-	connPool := pool.NewSingleConnPool(nil)
-	connPool.SetConn(cn)
+	connPool := pool.NewSingleConnPool(c.connPool, cn)
 	conn := newConn(ctx, c.opt, connPool)
 
 	_, err := conn.Pipelined(ctx, func(pipe Pipeliner) error {
@@ -274,15 +253,15 @@ func (c *baseClient) initConn(ctx context.Context, cn *pool.Conn) error {
 	return nil
 }
 
-func (c *baseClient) releaseConn(cn *pool.Conn, err error) {
+func (c *baseClient) releaseConn(ctx context.Context, cn *pool.Conn, err error) {
 	if c.opt.Limiter != nil {
 		c.opt.Limiter.ReportResult(err)
 	}
 
 	if isBadConn(err, false) {
-		c.connPool.Remove(cn, err)
+		c.connPool.Remove(ctx, cn, err)
 	} else {
-		c.connPool.Put(cn)
+		c.connPool.Put(ctx, cn)
 	}
 }
 
@@ -295,7 +274,7 @@ func (c *baseClient) withConn(
 			return err
 		}
 		defer func() {
-			c.releaseConn(cn, err)
+			c.releaseConn(ctx, cn, err)
 		}()
 
 		err = fn(ctx, cn)
@@ -585,7 +564,7 @@ func (c *Client) WithContext(ctx context.Context) *Client {
 }
 
 func (c *Client) Conn(ctx context.Context) *Conn {
-	return newConn(ctx, c.opt, pool.NewSingleConnPool(c.connPool))
+	return newConn(ctx, c.opt, pool.NewStickyConnPool(c.connPool))
 }
 
 // Do creates a Cmd from the args and processes the cmd.

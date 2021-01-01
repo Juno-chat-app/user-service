@@ -170,3 +170,7 @@ func (s *Server) Refresh(ctx context.Context, req *userproto.RequestMessage) (*u
 
 	return &response, nil
 }
+
+func (s *Server) GetUser(context.Context, *userproto.RequestMessage) (*userproto.ResponseMessage, error) {
+	panic("not implemented")
+}

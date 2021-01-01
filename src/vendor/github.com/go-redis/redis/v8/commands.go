@@ -2306,8 +2306,10 @@ func (c cmdable) SlaveOf(ctx context.Context, host, port string) *StatusCmd {
 	return cmd
 }
 
-func (c cmdable) SlowLog(ctx context.Context) {
-	panic("not implemented")
+func (c cmdable) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd {
+	cmd := NewSlowLogCmd(context.Background(), "slowlog", "get", num)
+	_ = c(ctx, cmd)
+	return cmd
 }
 
 func (c cmdable) Sync(ctx context.Context) {

@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// todo :: implement get user by user id, or one of contact info
 func main() {
 	mode := os.Getenv("APP_MODE")
 	var conf *config.Configuration

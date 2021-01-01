@@ -8,4 +8,5 @@ service UserService {
     rpc SignUp (RequestMessage) returns (ResponseMessage);
     rpc Verify (RequestMessage) returns (ResponseMessage);
     rpc Refresh (RequestMessage) returns (ResponseMessage);
+    rpc GetUser (RequestMessage) returns (ResponseMessage);
 }

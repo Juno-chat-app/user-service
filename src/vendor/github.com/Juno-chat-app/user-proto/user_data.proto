@@ -6,6 +6,7 @@ message SignUpRequest {
     string UserName = 1;
     string Email = 2;
     string Password = 3;
+    string PhoneNumber = 4;
 }
 
 message SignInRequest {
@@ -25,5 +26,27 @@ message Response {
     string BearerToken = 1;
     int64 Duration = 2;
     string RefreshToken = 3;
+}
+
+//=============== Get user request data
+message GetUserRequest {
+    // services can use this info to reterive users
+    message ConnectionInfo {
+        string PhoneNumber = 1;
+        string Email = 2;
+    }
+
+    ConnectionInfo SearchInfo = 1;
+}
+
+message GetUserResponse {
+    message UserInfo {
+        string UserName = 1;
+        string Email = 2;
+        string PhoneNumber = 3;
+        string UserId = 4;
+    }
+
+    UserInfo Info = 1;
 }
 

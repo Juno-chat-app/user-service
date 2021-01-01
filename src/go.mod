@@ -3,9 +3,10 @@ module github.com/Juno-chat-app/user-service
 go 1.13
 
 require (
-	github.com/Juno-chat-app/user-proto v0.0.4
+	github.com/Juno-chat-app/user-proto v0.0.5
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-redis/redis/v8 v8.0.0-beta.7
+	github.com/go-redis/redis/v8 v8.0.0
+	github.com/golang/protobuf v1.4.2
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/twinj/uuid v1.0.0
