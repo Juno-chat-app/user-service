@@ -14,6 +14,7 @@ type IUserService interface {
 	SignIn(ctx context.Context, user *entity.User) (auth *authorization.TokenDetail, err error)
 	RefreshToken(ctx context.Context, token *authorization.TokenDetail) (token_ *authorization.TokenDetail, err error)
 	Validate(ctx context.Context, token *authorization.TokenDetail) (token_ *authorization.TokenDetail, err error)
+	GetUser(ctx context.Context, info entity.ContactInfo) (usr *entity.User, err error)
 }
 
 func NewUserService(logger logger.ILogger, repo mongo.IUserRepository, cache redis.ICache, auth authorization.IJwtHandler) IUserService {

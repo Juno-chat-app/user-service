@@ -181,3 +181,7 @@ func (i *iUserService) Validate(ctx context.Context, token *authorization.TokenD
 
 	return token_, nil
 }
+
+func (i *iUserService) GetUser(ctx context.Context, info entity.ContactInfo) (*entity.User, error) {
+	panic("not implemented")
+}

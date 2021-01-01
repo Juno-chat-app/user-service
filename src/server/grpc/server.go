@@ -14,6 +14,7 @@ const (
 	SignUpRequestMethod   string = "SignUpRequest"
 	ValidateRequestMethod string = "ValidateRequest"
 	RefreshRequestMethod  string = "RefreshRequest"
+	GetUserRequestMethod  string = "GetUserRequest"
 )
 
 type Server struct {

@@ -171,6 +171,49 @@ func (s *Server) Refresh(ctx context.Context, req *userproto.RequestMessage) (*u
 	return &response, nil
 }
 
-func (s *Server) GetUser(context.Context, *userproto.RequestMessage) (*userproto.ResponseMessage, error) {
-	panic("not implemented")
+func (s *Server) GetUser(ctx context.Context, req *userproto.RequestMessage) (*userproto.ResponseMessage, error) {
+	if req.Body.TypeUrl != GetUserRequestMethod {
+		return nil, status.Error(http.StatusBadRequest, "request content type must be GetUserRequest")
+	}
+
+	body := userproto.GetUserRequest{}
+	err := proto.Unmarshal(req.Body.Value, &body)
+	if err != nil {
+		return nil, status.Error(http.StatusBadRequest, "request body type is not GetUserRequest")
+	}
+
+	contactInfo := entity.ContactInfo{
+		Mobile: body.SearchInfo.PhoneNumber,
+		Email:  body.SearchInfo.Email,
+	}
+
+	user, err := s.userService.GetUser(ctx, contactInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	responseBody := userproto.GetUserResponse{
+		Info: &userproto.GetUserResponse_UserInfo{
+			UserName:    user.UserName,
+			Email:       user.ContactInfo.Email,
+			PhoneNumber: user.ContactInfo.Mobile,
+			UserId:      user.UserId,
+		},
+	}
+
+	responseBodyByte, err := proto.Marshal(&responseBody)
+	if err != nil {
+		return nil, status.Error(http.StatusInternalServerError, "got error on generating response")
+	}
+
+	response := userproto.ResponseMessage{
+		Entity: "Response",
+		Meta:   nil,
+		Data: &userproto.Any{
+			TypeUrl: "GetUserResponse",
+			Value:   responseBodyByte,
+		},
+	}
+	
+	return &response, nil
 }
